@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Class</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+<div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <h2 class="text-2xl font-bold text-green-700 text-center mb-4">Create a New Class</h2>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="p-3 mb-4 text-center rounded-lg {% if category == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" class="space-y-4">
+        <div>
+            <label for="paper_number" class="block font-medium">Paper Number:</label>
+            <select name="paper_number" id="paper_number" required class="w-full border rounded-lg p-2 mt-1">
+                <option value="" disabled selected>Select Paper Number</option>
+                {% for i in range(1, 19) %}
+                    <option value="p{{ i }}">p{{ i }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="paper_name" class="block font-medium">Paper Name:</label>
+            <input type="text" name="paper_name" id="paper_name" placeholder="Enter Paper Name" required class="w-full border rounded-lg p-2 mt-1">
+        </div>
+
+        <div>
+            <label for="zoom_link" class="block font-medium">Zoom Link:</label>
+            <input type="url" name="zoom_link" id="zoom_link" placeholder="Enter Zoom Link" required class="w-full border rounded-lg p-2 mt-1">
+        </div>
+
+        <div>
+            <label for="start_time" class="block font-medium">Start Time (Ugandan Time):</label>
+            <input type="time" name="start_time" id="start_time" required class="w-full border rounded-lg p-2 mt-1">
+        </div>
+
+        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">
+            Create Class
+        </button>
+    </form>
+</div>
+
+</body>
+</html>
+
+{% endblock %}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Student Dashboard</title>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Navbar -->
+    <nav class="bg-blue-600 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <img src="../static/lo.jpg" alt="Logo" class="w-12 h-12 rounded-full">
+                <h1 class="ml-2 text-xl sm:text-2xl font-semibold">Welcome, {{ student['student'].values[0] }}</h1>
+            </div>
+            <a href="/logouts" class="text-white text-lg bg-red-600 px-4 py-2 rounded-md hover:bg-red-700 transition-all">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="container mx-auto mt-8 px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold mb-4">Available Classes</h2>
+
+        {% if message %}
+            <div class="bg-yellow-100 text-yellow-700 p-4 rounded-md mb-4">
+                <p>{{ message }}</p>
+            </div>
+        {% endif %}
+
+        <!-- Table of Classes -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto border-collapse bg-white rounded-lg shadow-md">
+                
+                <tbody>
+                    {{ classes | safe }} <!-- Render dynamic table content -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-blue-600 text-white p-4 mt-10">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 UNDER DEVELOPMENT BY ZAYYAN SOFTWARE SOLUTIONS.</p>
+        </div>
+    </footer>
+
+    <!-- JS for status check -->
+    <script>
+        // Function to check account status
+        function checkStatus() {
+            fetch('/check_status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "logout") {
+                   // alert("Your account has been deactivated. You will be logged out.");
+                    window.location.href = "/student_login";
+                }
+            });
+        }
+        setInterval(checkStatus, 5000); // Check every 5 seconds
+
+
+
+       
+    </script>
+
+</body>
+</html>

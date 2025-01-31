@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+
+    <!-- Dashboard Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <!-- Total Students Card -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-lg font-semibold text-green-700">Total Students</h3>
+            <p class="text-3xl font-bold text-center">{{ total_students }}</p>
+        </div>
+        
+        <!-- Active Students Card -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-lg font-semibold text-green-700">Active Students</h3>
+            <p class="text-3xl font-bold text-center">{{ active_students }}</p>
+        </div>
+        
+        <!-- Inactive Students Card -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-lg font-semibold text-red-700">Inactive Students</h3>
+            <p class="text-3xl font-bold text-center">{{ inactive_students }}</p>
+        </div>
+    </div>
+
+    <!-- Inactive Students Table -->
+    {% if inactive_students_details.shape[0] > 0 %}
+    <div class="mt-6 overflow-x-auto bg-white rounded-lg shadow-lg">
+        <table class="w-full table-auto border-collapse">
+            <thead class="bg-green-600 text-white">
+                <tr>
+                    <th class="p-3 text-left">Student</th>
+                    <th class="p-3 text-left">Email</th>
+                    <th class="p-3 text-left">Papers Taken</th>
+                    <th class="p-3 text-left">Default Password</th>
+                    <th class="p-3 text-left">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for index, row in inactive_students_details.iterrows() %}
+                <tr class="border-b hover:bg-gray-100">
+                    <td class="p-3">{{ row['student'] }}</td>
+                    <td class="p-3">{{ row['email'] }}</td>
+                    <td class="p-3">{{ row['papers taken'] }}</td>
+                    <td class="p-3">{{ row['default password'] }}</td>
+                    <td class="p-3">{{ row['status'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="mt-6 text-center text-gray-600">No inactive students available.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
