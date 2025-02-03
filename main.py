@@ -74,11 +74,25 @@ def dashboard():
 @app.route("/upload_students", methods=["GET", "POST"])
 def upload_students():
     if request.method == "POST":
-        if "upload_file" in request.files:
-            file = request.files["upload_file"]
-            if file and file.filename.endswith(".xlsx"):
-                file_path = os.path.join(UPLOAD_FOLDER, secure_filename(file.filename))
-                file.save(file_path)
+        try:
+            if "upload_file" in request.files:
+                file = request.files["upload_file"]
+
+                if not file or file.filename == "":
+                    flash("No file selected. Please upload an Excel file.", "danger")
+                    return redirect(url_for("upload_students"))
+
+                if not file.filename.endswith(".xlsx"):
+                    flash("Invalid file format. Only .xlsx files are allowed.", "danger")
+                    return redirect(url_for("upload_students"))
+
+                file_path = os.path.join(app.config["UPLOAD_FOLDER"], secure_filename(file.filename))
+                
+                try:
+                    file.save(file_path)
+                except Exception as e:
+                    flash(f"Error saving file: {str(e)}", "danger")
+                    return redirect(url_for("upload_students"))
 
                 try:
                     process_excel(file_path)
@@ -86,25 +100,27 @@ def upload_students():
                 except Exception as e:
                     flash(f"Error processing file: {str(e)}", "danger")
 
-            else:
-                flash("Invalid file format. Please upload an Excel file (.xlsx).", "danger")
+            elif request.form.get("manual_entry"):
+                student = request.form.get("student", "").strip()
+                email = request.form.get("email", "").strip()
+                papers_taken = request.form.get("papers_taken", "").strip()
 
-        elif request.form.get("manual_entry"):
-            student = request.form.get("student")
-            email = request.form.get("email")
-            papers_taken = request.form.get("papers_taken")
+                if not student or not email or not papers_taken:
+                    flash("All fields are required for manual entry.", "danger")
+                    return redirect(url_for("upload_students"))
 
-            if student and email and papers_taken:
                 success, message = add_student_manually(student, email, papers_taken)
                 flash(message, "success" if success else "danger")
+
             else:
-                flash("All fields are required for manual entry.", "danger")
+                flash("Invalid request. Please upload a file or enter student details manually.", "danger")
+
+        except Exception as e:
+            flash(f"An unexpected error occurred: {str(e)}", "danger")
 
         return redirect(url_for("upload_students"))
 
     return render_template("upload_students.html")
-
-
 
 
 
